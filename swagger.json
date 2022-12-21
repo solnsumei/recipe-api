@@ -1,0 +1,162 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a sample reciples API. You can find out more about the API at\nhttps://github.com/solnsumei/recipe-api",
+    "title": "Recipe API.",
+    "contact": {
+      "name": "Solomon Nsumei",
+      "url": "https://solnsumei.com",
+      "email": "solnsumei@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "host": "localhost:8080",
+  "basePath": "/",
+  "paths": {
+    "/recipes": {
+      "get": {
+        "description": "Returns list of recipes",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "recipes"
+        ],
+        "operationId": "listRecipes",
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          }
+        }
+      },
+      "post": {
+        "description": "Add a new recipe",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "recipes"
+        ],
+        "operationId": "addRecipe",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "request body",
+            "name": "body",
+            "in": "body",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/recipes/search": {
+      "get": {
+        "description": "Search recipe with tags",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "recipes"
+        ],
+        "operationId": "searchRecipes",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Fetch recipes that match tag",
+            "name": "tag",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          }
+        }
+      }
+    },
+    "/recipes/{id}": {
+      "put": {
+        "description": "Update an existing recipe",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "recipes"
+        ],
+        "operationId": "updateRecipe",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of the recipe",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "object",
+            "description": "request body",
+            "name": "body",
+            "in": "body",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Invalid recipe ID"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete an existing recipe",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "recipes"
+        ],
+        "operationId": "deleteRecipe",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of the recipe",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "404": {
+            "description": "Invalid recipe ID"
+          }
+        }
+      }
+    }
+  }
+}
