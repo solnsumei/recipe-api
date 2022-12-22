@@ -24,6 +24,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/solnsumei/recipe-api/config"
 	"github.com/solnsumei/recipe-api/handlers"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -33,6 +34,7 @@ import (
 var recipeHandler *handlers.RecipesHandler
 
 func init() {
+	config.LoadEnvVariables()
 	ctx := context.Background()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_URI")))
 	if err != nil {
