@@ -60,5 +60,5 @@ func main() {
 	router.DELETE("/recipes/:id", recipeHandler.DeleteRecipeHandler)
 	// router.GET("/recipes/search", SearchRecipesHandler)
 
-	router.Run(":8080")
+	router.Run()
 }
