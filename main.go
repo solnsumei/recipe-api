@@ -19,18 +19,13 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
-	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis/v9"
 	"github.com/solnsumei/recipe-api/config"
 	"github.com/solnsumei/recipe-api/handlers"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"github.com/solnsumei/recipe-api/services"
 )
 
 var recipeHandler *handlers.RecipesHandler
@@ -38,28 +33,18 @@ var recipeHandler *handlers.RecipesHandler
 func init() {
 	config.LoadEnvVariables()
 	ctx := context.Background()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_URI")))
+
+	// Initialize mongo collection
+	collection, err := services.InitMongoDB(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Connected to MongoDB")
-
-	collection := client.Database(os.Getenv(
-		"MONGO_DATABASE")).Collection("recipes")
+	// Initialize redis client
+	redisClient := services.InitRedis(ctx)
 
 	// SeedDB(ctx, collection) // comment out after seeding
-	recipeHandler = handlers.NewRecipesHandler(ctx, collection)
-	redisClient := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_URL"),
-		Password: "",
-		DB:       0,
-	})
-	status := redisClient.Ping(ctx)
-	fmt.Println(status)
+	recipeHandler = handlers.NewRecipesHandler(ctx, collection, redisClient)
 }
 
 func main() {
