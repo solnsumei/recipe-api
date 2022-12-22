@@ -49,6 +49,7 @@ func init() {
 	collection := client.Database(os.Getenv(
 		"MONGO_DATABASE")).Collection("recipes")
 
+	// SeedDB(ctx, collection) // To be commented out after seeding
 	recipeHandler = handlers.NewRecipesHandler(ctx, collection)
 }
 
