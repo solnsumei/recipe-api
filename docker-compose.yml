@@ -17,7 +17,7 @@ services:
     image: redis
     container_name: redis
     ports:
-      - '6379:6379'
+      - '6378:6379'
     volumes:
       - redisDB:/data
       - ./redis.conf:/usr/local/etc/redis/redis.conf
