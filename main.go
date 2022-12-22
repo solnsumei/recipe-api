@@ -27,6 +27,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/solnsumei/recipe-api/handlers"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -45,25 +46,24 @@ type Recipe struct {
 	PublishedAt  time.Time          `json:"publishedAt" bson:"publishedAt"`
 }
 
-var ctx context.Context
-var client *mongo.Client
-var err error
-var collection *mongo.Collection
+var recipeHandler *handlers.RecipesHandler
 
 func init() {
-	ctx = context.Background()
-	client, err = mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_URI")))
+	ctx := context.Background()
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_URI")))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err = client.Ping(context.TODO(), readpref.Primary()); err != nil {
+	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
 		log.Fatal(err)
 	}
 	log.Println("Connected to MongoDB")
 
-	collection = client.Database(os.Getenv(
+	collection := client.Database(os.Getenv(
 		"MONGO_DATABASE")).Collection("recipes")
+
+	recipeHandler = handlers.NewRecipesHandler(ctx, collection)
 }
 
 // swagger:operation POST /recipes recipes addRecipe
