@@ -114,6 +114,47 @@ func (handler *RecipesHandler) NewRecipeHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, recipe)
 }
 
+// swagger:operation GET /recipes/{id} recipes getRecipe
+// Fetch an existing recipe
+// ---
+// parameters:
+//   - name: id
+//     in: path
+//     description: ID of the recipe
+//     required: true
+//     type: string
+//
+// produces:
+// - application/json
+// responses:
+//
+//	  '200':
+//		    description: Successful operation
+//	  '404':
+//	 	    description: Invalid recipe ID
+func (handler *RecipesHandler) GetRecipeHandler(c *gin.Context) {
+	id := c.Param("id")
+	var recipe models.Recipe
+
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "Resource not found",
+		})
+		return
+	}
+
+	if err = handler.collection.FindOne(handler.ctx, bson.M{"_id": objectId}).Decode(&recipe); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, recipe)
+}
+
 // swagger:operation PUT /recipes/{id} recipes updateRecipe
 // Update an existing recipe
 // ---
