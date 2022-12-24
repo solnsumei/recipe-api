@@ -56,6 +56,7 @@ func main() {
 	// Routes
 	router.POST("/recipes", recipeHandler.NewRecipeHandler)
 	router.GET("/recipes", recipeHandler.ListRecipesHandler)
+	router.GET("/recipes/:id", recipeHandler.GetRecipeHandler)
 	router.PUT("/recipes/:id", recipeHandler.UpdateRecipeHandler)
 	router.DELETE("/recipes/:id", recipeHandler.DeleteRecipeHandler)
 	// router.GET("/recipes/search", SearchRecipesHandler)
