@@ -65,12 +65,13 @@ func main() {
 	router.Use(cors.Default())
 
 	// Recipe Routes
+	router.GET("/recipes", recipeHandler.ListRecipesHandler)
+	router.GET("/recipes/:id", recipeHandler.GetRecipeHandler)
+
 	authorised := router.Group("/")
 	authorised.Use(AuthMiddleware())
 	{
 		authorised.POST("/recipes", recipeHandler.NewRecipeHandler)
-		authorised.GET("/recipes", recipeHandler.ListRecipesHandler)
-		authorised.GET("/recipes/:id", recipeHandler.GetRecipeHandler)
 		authorised.PUT("/recipes/:id", recipeHandler.UpdateRecipeHandler)
 		authorised.DELETE("/recipes/:id", recipeHandler.DeleteRecipeHandler)
 		// router.GET("/recipes/search", SearchRecipesHandler)
