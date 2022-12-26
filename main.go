@@ -20,6 +20,7 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -47,19 +48,33 @@ func init() {
 	recipeHandler = handlers.NewRecipesHandler(ctx, collection, redisClient)
 }
 
+func AuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if c.GetHeader("X-API-KEY") != os.Getenv("X_API_KEY") {
+			c.AbortWithStatusJSON(401, gin.H{"message": "Unauthorised"})
+			return
+		}
+		c.Next()
+	}
+}
+
 func main() {
 	router := gin.Default()
 
 	// enable CORS
 	router.Use(cors.Default())
 
-	// Routes
-	router.POST("/recipes", recipeHandler.NewRecipeHandler)
-	router.GET("/recipes", recipeHandler.ListRecipesHandler)
-	router.GET("/recipes/:id", recipeHandler.GetRecipeHandler)
-	router.PUT("/recipes/:id", recipeHandler.UpdateRecipeHandler)
-	router.DELETE("/recipes/:id", recipeHandler.DeleteRecipeHandler)
-	// router.GET("/recipes/search", SearchRecipesHandler)
+	// Recipe Routes
+	authorised := router.Group("/")
+	authorised.Use(AuthMiddleware())
+	{
+		authorised.POST("/recipes", recipeHandler.NewRecipeHandler)
+		authorised.GET("/recipes", recipeHandler.ListRecipesHandler)
+		authorised.GET("/recipes/:id", recipeHandler.GetRecipeHandler)
+		authorised.PUT("/recipes/:id", recipeHandler.UpdateRecipeHandler)
+		authorised.DELETE("/recipes/:id", recipeHandler.DeleteRecipeHandler)
+		// router.GET("/recipes/search", SearchRecipesHandler)
+	}
 
 	router.Run()
 }
